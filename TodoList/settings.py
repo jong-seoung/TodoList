@@ -34,6 +34,10 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
+third_apps = ['rest_framework']
+
+local_apps = ['accounts']
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -41,6 +45,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    *third_apps,
+    *local_apps,
 ]
 
 MIDDLEWARE = [
@@ -107,6 +113,8 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# Custom User Model
+AUTH_USER_MODEL = "accounts.User"
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
