@@ -36,7 +36,7 @@ ALLOWED_HOSTS = []
 
 third_apps = ['rest_framework']
 
-local_apps = ['accounts']
+local_apps = ['accounts', 'core']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
