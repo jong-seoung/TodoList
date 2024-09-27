@@ -7,7 +7,7 @@ from rest_framework.mixins import CreateModelMixin, ListModelMixin, UpdateModelM
 from rest_framework.views import APIView
 
 from todo.models import Todo,SupportTodo
-from todo.serializers import TodoSerializer, SupportTodoSerializer
+from todo.serializers import TodoSerializer
 
 
 class TodoView(ActionBasedViewSetMixin, GenericViewSet, CreateModelMixin, ListModelMixin, UpdateModelMixin, DestroyModelMixin):
