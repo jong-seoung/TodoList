@@ -1,10 +1,14 @@
+from django.shortcuts import get_object_or_404
+from rest_framework.response import Response
+from rest_framework import status
 from core.mixins import ActionBasedViewSetMixin
 from rest_framework.viewsets import GenericViewSet
 from rest_framework.mixins import CreateModelMixin, ListModelMixin, UpdateModelMixin, DestroyModelMixin
-from rest_framework.response import Response
+from rest_framework.views import APIView
 
-from todo.models import Todo
-from todo.serializers import TodoSerializer
+from todo.models import Todo,SupportTodo
+from todo.serializers import TodoSerializer, SupportTodoSerializer
+
 
 class TodoView(ActionBasedViewSetMixin, GenericViewSet, CreateModelMixin, ListModelMixin, UpdateModelMixin, DestroyModelMixin):
     queryset = Todo.objects.all()
@@ -20,16 +24,24 @@ class TodoView(ActionBasedViewSetMixin, GenericViewSet, CreateModelMixin, ListMo
         "partial_update": TodoSerializer,
     }
 
-    def create(self, request, *args, **kwargs):
-        user = request.user
-        
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)
+        return super().perform_create(serializer)
 
-        serializer.save(author=user)
-        
-        headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=201, headers=headers)
-    
-    def partial_update(self, request, *args, **kwargs):
-        return super().partial_update(request, *args, **kwargs)
+
+class SupportAPIView(APIView):
+    def post(self, request, todo_id):
+        user = request.user
+        support_todo = SupportTodo.objects.filter(todo_id=todo_id, send_user=user).first()
+
+        if support_todo:
+            if support_todo.is_support == True:
+                support_todo.is_support = False
+            else:
+                support_todo.is_support = True
+            support_todo.save()
+            return Response({"detail": f"지원 상태가 {support_todo.is_support}로 업데이트되었습니다."}, status=status.HTTP_200_OK)
+        else:
+            todo_instance = get_object_or_404(Todo, id=todo_id) 
+            SupportTodo.objects.create(todo=todo_instance, send_user=user, is_support=True)
+            return Response({"detail": "SupportTodo가 생성되었습니다."}, status=status.HTTP_201_CREATED)
