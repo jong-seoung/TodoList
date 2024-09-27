@@ -1,4 +1,5 @@
 # accounts/views.py
+from django.shortcuts import get_object_or_404
 from accounts.serializers import LoginSerializer, SignupSerializer
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
@@ -6,6 +7,8 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
+
+from accounts.models import User, Follow
 
 
 class SignupView(APIView):
@@ -33,3 +36,18 @@ class LogoutView(APIView):
     def post(self, request):
         auth_logout(request)
         return Response({"message": "로그아웃 완료"}, status=status.HTTP_200_OK)
+    
+
+class FollowView(APIView):
+    def post(self, request, receive_user):
+        send_user = request.user
+        receive_user = get_object_or_404(User, id=receive_user)
+        
+        follow_instance = Follow.objects.filter(send_user=send_user, receive_user=receive_user)
+
+        if follow_instance:
+            follow_instance.delete()
+            return Response({"detail": "언팔"}, status=status.HTTP_200_OK)
+        else:
+            Follow.objects.create(send_user=send_user, receive_user=receive_user)
+            return Response({"detail": "팔로우"}, status=status.HTTP_201_CREATED)
