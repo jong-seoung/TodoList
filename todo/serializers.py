@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from todo.models import Todo
+from todo.models import Todo, Alarm
 
 
 class TodoSerializer(serializers.ModelSerializer):
@@ -16,3 +16,9 @@ class TodoSerializer(serializers.ModelSerializer):
 
     def get_optimized_queryset():
         return Todo.objects.all()
+    
+
+class AlarmSeralizer(serializers.ModelSerializer):
+    class Meta:
+        model = Alarm
+        fields = ['sender', 'content', 'created_at', 'is_read']

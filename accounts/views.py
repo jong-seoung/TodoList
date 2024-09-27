@@ -9,6 +9,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from accounts.models import User, Follow
+from todo.models import Alarm
 
 
 class SignupView(APIView):
@@ -42,7 +43,7 @@ class FollowView(APIView):
     def post(self, request, receive_user):
         send_user = request.user
         receive_user = get_object_or_404(User, id=receive_user)
-        
+
         follow_instance = Follow.objects.filter(send_user=send_user, receive_user=receive_user)
 
         if follow_instance:
@@ -50,4 +51,12 @@ class FollowView(APIView):
             return Response({"detail": "언팔"}, status=status.HTTP_200_OK)
         else:
             Follow.objects.create(send_user=send_user, receive_user=receive_user)
+
+            Alarm.objects.create(
+                sender=send_user,
+                receiver=receive_user,
+                type='follow',
+                content=f'{send_user.profile.nickname}님이 당신을 팔로우합니다.'
+            )
+
             return Response({"detail": "팔로우"}, status=status.HTTP_201_CREATED)
