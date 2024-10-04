@@ -60,3 +60,8 @@ class FollowView(APIView):
             )
 
             return Response({"detail": "팔로우"}, status=status.HTTP_201_CREATED)
+
+
+class HealthCheckView(APIView):
+    def get(self, request):
+        return Response({"detail":"서버 작동 중"},status=status.HTTP_200_OK)
