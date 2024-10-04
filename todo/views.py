@@ -1,13 +1,16 @@
 from django.shortcuts import get_object_or_404
+
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
-from core.mixins import ActionBasedViewSetMixin
 from rest_framework.viewsets import GenericViewSet
 from rest_framework.mixins import CreateModelMixin, ListModelMixin, UpdateModelMixin, DestroyModelMixin
 from rest_framework.views import APIView
 
 from todo.models import Todo,SupportTodo, Alarm
 from todo.serializers import TodoSerializer, AlarmSeralizer
+from core.mixins import ActionBasedViewSetMixin
+from core.permissions import IsAuthorOrReadonly, IsAuthenticatedAndOnwerOrReadonly
 
 
 class TodoView(ActionBasedViewSetMixin, GenericViewSet, CreateModelMixin, ListModelMixin, UpdateModelMixin, DestroyModelMixin):
@@ -23,6 +26,7 @@ class TodoView(ActionBasedViewSetMixin, GenericViewSet, CreateModelMixin, ListMo
         "list": TodoSerializer,
         "partial_update": TodoSerializer,
     }
+    permission_classes = [IsAuthorOrReadonly]
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
@@ -30,15 +34,14 @@ class TodoView(ActionBasedViewSetMixin, GenericViewSet, CreateModelMixin, ListMo
 
 
 class SupportAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+    
     def post(self, request, todo_id):
         user = request.user
         support_todo = SupportTodo.objects.filter(todo_id=todo_id, send_user=user).first()
 
         if support_todo:
-            if support_todo.is_support == True:
-                support_todo.is_support = False
-            else:
-                support_todo.is_support = True
+            support_todo.is_support = not support_todo.is_support
             support_todo.save()
             return Response({"detail": f"지원 상태가 {support_todo.is_support}로 업데이트되었습니다."}, status=status.HTTP_200_OK)
         else:
@@ -56,6 +59,8 @@ class SupportAPIView(APIView):
         
 
 class AlarmView(APIView):
+    permission_classes = [IsAuthenticatedAndOnwerOrReadonly]
+
     def get(self, request):
         user = request.user
         alarm = Alarm.objects.filter(receiver=user, is_read=False).order_by('-created_at')

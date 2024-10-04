@@ -34,7 +34,7 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
-third_apps = ['rest_framework']
+third_apps = ['rest_framework', 'django_extensions']
 
 local_apps = ['accounts', 'core', 'todo']
 
