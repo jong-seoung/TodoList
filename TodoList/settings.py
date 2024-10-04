@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 env = environ.Env(DEBUG=(bool, True))
 environ.Env.read_env(env_file=os.path.join(BASE_DIR, ".env"))
-SECRET_KEY = env("SECRET_KEY")
+SECRET_KEY = env("SECRET_KEY", default="django-insecure-stfx7qb!3msu9)!qmdagr370yqjc+)1tpf0*-5ggip9ps6)+4&")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -93,6 +93,7 @@ DATABASES = {
         'PORT': env("DB_PORT"),
     }
 }
+
 
 
 # Password validation
