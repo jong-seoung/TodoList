@@ -29,7 +29,7 @@ SECRET_KEY = env("SECRET_KEY", default="django-insecure-stfx7qb!3msu9)!qmdagr370
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition

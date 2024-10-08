@@ -1,2 +1,3 @@
 -r common.txt
 ipython
+psycopg2==2.9.9
