@@ -91,6 +91,14 @@ DATABASES = {
         'PASSWORD': env("DB_PASSWORD"),
         'HOST': env("DB_HOST"),
         'PORT': env("DB_PORT"),
+    },
+    'replica': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': env('DB_READ_NAME'),
+        'USER': env('DB_READ_USER'),
+        'PASSWORD': env('DB_READ_PASSWORD'),
+        'HOST': env('DB_READ_HOST'),
+        'PORT': env('DB_READ_PORT'),
     }
 }
 
