@@ -18,14 +18,12 @@ class PrimaryReplicaRouter:
 
     def allow_relation(self, obj1, obj2, **hints):
         """
-        Allows relations if a model is in the primary/replica (읽기/쓰기 데이터베이스 간의 관계 허용 여부).
+        기본 데이터베이스와 읽기 전용 데이터베이스 간의 관계를 허용합니다.
         """
-        db_obj1 = hints.get('instance', obj1)._state.db
-        db_obj2 = hints.get('instance', obj2)._state.db
-        if db_obj1 and db_obj2:
-            if db_obj1 == db_obj2:
-                return True
-        return False
+        db_list = ('default', 'replica')
+        if obj1._state.db in db_list and obj2._state.db in db_list:
+            return True
+        return None
 
     def allow_migrate(self, db, app_label, model_name=None, **hints):
         """
