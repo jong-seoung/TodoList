@@ -102,6 +102,7 @@ DATABASES = {
     }
 }
 
+DATABASE_ROUTERS = ['core.db_router.PrimaryReplicaRouter']
 
 
 # Password validation
