@@ -10,6 +10,8 @@ from rest_framework.views import APIView
 
 from accounts.models import User, Follow
 from todo.models import Alarm
+from core.loggings import log_db_url
+
 
 
 class SignupView(APIView):
@@ -23,6 +25,7 @@ class SignupView(APIView):
 
 class LoginView(APIView):
     def post(self, request):
+        log_db_url()
         serializer = LoginSerializer(data=request.data)
         if serializer.is_valid():
             user = serializer.validated_data
@@ -64,4 +67,5 @@ class FollowView(APIView):
 
 class HealthCheckView(APIView):
     def get(self, request):
+        log_db_url()
         return Response({"detail":"서버 작동 중"},status=status.HTTP_200_OK)
