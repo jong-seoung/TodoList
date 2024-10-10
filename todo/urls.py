@@ -10,6 +10,6 @@ router_todo.register(prefix="todo", viewset=TodoView)
 urlpatterns = [
     path("api/support/<int:todo_id>", SupportAPIView.as_view(), name='support'),
     path("api/alarm/<int:alarm_id>", AlarmView.as_view(), name='alarm-read'),
-    path("api/alarm/", AlarmView.as_view(), name='alarm-list'),
+    path("api/alarm-list/", AlarmView.as_view(), name='alarm-list'),
     path("api/", include((router_todo.urls, "todo-api-v1")))
     ]
