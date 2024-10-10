@@ -67,5 +67,4 @@ class FollowView(APIView):
 
 class HealthCheckView(APIView):
     def get(self, request):
-        log_db_url()
         return Response({"detail":"서버 작동 중"},status=status.HTTP_200_OK)

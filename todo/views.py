@@ -11,6 +11,7 @@ from todo.models import Todo,SupportTodo, Alarm
 from todo.serializers import TodoSerializer, AlarmSeralizer
 from core.mixins import ActionBasedViewSetMixin
 from core.permissions import IsAuthorOrReadonly, IsAuthenticatedAndOnwerOrReadonly
+from core.loggings import log_db_url
 
 
 class TodoView(ActionBasedViewSetMixin, GenericViewSet, CreateModelMixin, ListModelMixin, UpdateModelMixin, DestroyModelMixin):
@@ -62,6 +63,7 @@ class AlarmView(APIView):
     permission_classes = [IsAuthenticatedAndOnwerOrReadonly]
 
     def get(self, request):
+        log_db_url()
         user = request.user
         alarm = Alarm.objects.filter(receiver=user, is_read=False).order_by('-created_at')
         serializer = AlarmSeralizer(alarm, many=True)
