@@ -83,6 +83,8 @@ WSGI_APPLICATION = 'TodoList.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
+DATABASE_ROUTERS = ['core.db_router.PrimaryReplicaRouter']
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -101,8 +103,6 @@ DATABASES = {
         'PORT': env('DB_READ_PORT'),
     }
 }
-
-DATABASE_ROUTERS = ['core.db_router.PrimaryReplicaRouter']
 
 
 # Password validation
@@ -153,22 +153,22 @@ LOGGING = {
     'disable_existing_loggers': False,
     'formatters': {
         'verbose': {
-            'format': '{asctime} {levelname} {name}: {message}',
+            'format': '{asctime} {levelname} {name}: \n {message}',
             'style': '{',
         },
     },
     'handlers': {
-        'db_file': {
-            'level': 'INFO',
+        'file': {
+            'level': 'DEBUG',
             'class': 'logging.FileHandler',
             'filename': os.path.join(BASE_DIR, 'db_url.log'),
-            'formatter': 'verbose',  # 이 부분을 추가하여 포맷터 지정
+            'formatter': 'verbose',
         },
     },
     'loggers': {
         'db_logger': {
-            'handlers': ['db_file'],
-            'level': 'INFO',
+            'handlers': ['file'],
+            'level': 'DEBUG',
             'propagate': False,
         },
     },

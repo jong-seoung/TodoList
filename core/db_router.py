@@ -1,7 +1,7 @@
 class PrimaryReplicaRouter:
     """
     A router to control all database operations on models for
-    primary/replica (write/read) setup.
+    default/replica (write/read) setup.
     """
 
     def db_for_read(self, model, **hints):
@@ -12,7 +12,7 @@ class PrimaryReplicaRouter:
 
     def db_for_write(self, model, **hints):
         """
-        Directs write operations to the primary (기본 데이터베이스로 쓰기 작업을 전달).
+        Directs write operations to the default (기본 데이터베이스로 쓰기 작업을 전달).
         """
         return 'default'
 
@@ -29,4 +29,4 @@ class PrimaryReplicaRouter:
         """
         All non-auth models end up on the primary database (모든 마이그레이션 작업은 기본 데이터베이스로 전달).
         """
-        return db == 'default'
+        return True
