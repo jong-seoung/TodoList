@@ -1,4 +1,4 @@
-FROM python:3.11.6-slim
+FROM python:3.11.6-slim as base
 
 # 필수 패키지 설치 (apt 패키지와 pip 설치를 함께)
 RUN apt-get update && \
@@ -14,13 +14,16 @@ WORKDIR /app
 
 # requirements 파일 복사 및 패키지 설치
 COPY requirements/ requirements/
-RUN pip install -r requirements/dev.txt
+RUN pip install -r requirements/prod.txt
 
 # 소스 코드 복사
 COPY . .
+
+# Production stage (Gunicorn 실행)
+FROM base as production
 
 # 포트 노출
 EXPOSE 8000
 
 # 컨테이너 실행 명령어
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "myproject.wsgi:application"]
