@@ -1,5 +1,5 @@
 import factory
-from accounts.tests.factories import UserFactory, ProfileFactory
+from accounts.tests.factories import UserFactory
 from todo.models import Todo, SupportTodo, Alarm
 
 

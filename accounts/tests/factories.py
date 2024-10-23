@@ -1,7 +1,6 @@
 import factory
 from django.contrib.auth.hashers import make_password
-from django.core.files import File
-from accounts.models import User, Profile
+from accounts.models import User
 
 class UserFactory(factory.django.DjangoModelFactory):
     class Meta:
@@ -21,17 +20,3 @@ class UserFactory(factory.django.DjangoModelFactory):
         if raw_password:
             kwargs["password"] = make_password(raw_password)
         return super()._create(model_class, *args, **kwargs)
-    
-    @factory.post_generation
-    def create_profile(self, create, extracted, **kwargs):
-        if not create:
-            return
-        ProfileFactory(user=self)
-
-class ProfileFactory(factory.django.DjangoModelFactory):
-    class Meta:
-        model = Profile
-    
-    user = factory.SubFactory(UserFactory)
-    nickname= factory.LazyAttribute(lambda profile: f"{profile.user}_nickname")
-    avatar = factory.Faker("word")

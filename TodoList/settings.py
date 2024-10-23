@@ -83,9 +83,10 @@ WSGI_APPLICATION = 'TodoList.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-DATABASE_ROUTERS = ['core.db_router.PrimaryReplicaRouter']
+import sys
 
-DATABASES = {
+if any("pytest" in arg for arg in sys.argv):
+    DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': env("DB_NAME"),
@@ -94,15 +95,28 @@ DATABASES = {
         'HOST': env("DB_HOST"),
         'PORT': env("DB_PORT"),
     },
-    'replica': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': env('DB_READ_NAME'),
-        'USER': env('DB_READ_USER'),
-        'PASSWORD': env('DB_READ_PASSWORD'),
-        'HOST': env('DB_READ_HOST'),
-        'PORT': env('DB_READ_PORT'),
     }
-}
+else:
+    DATABASE_ROUTERS = ['core.db_router.PrimaryReplicaRouter']
+
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': env("DB_NAME"),
+            'USER': env("DB_USER"),
+            'PASSWORD': env("DB_PASSWORD"),
+            'HOST': env("DB_HOST"),
+            'PORT': env("DB_PORT"),
+        },
+        'replica': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': env('DB_READ_NAME'),
+            'USER': env('DB_READ_USER'),
+            'PASSWORD': env('DB_READ_PASSWORD'),
+            'HOST': env('DB_READ_HOST'),
+            'PORT': env('DB_READ_PORT'),
+        }
+    }
 
 
 # Password validation
